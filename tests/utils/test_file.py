@@ -71,12 +71,12 @@ class TestDownloadAndDecompressSourceToDestination(BaseTestCase):
         with TempDirectory() as test_dir:
 
             destination_path = download_and_decompress_source_to_destination(
-                source_uri="https://www.redhat.com/security/data/cvrf/2020/cvrf-rhba-2020-0017.xml",
+                source_uri="https://www.w3schools.com/xml/simple.xml",
                 destination_dir=test_dir.path
             )
 
             self.assertIsNotNone(destination_path)
-            self.assertRegex(destination_path, rf'{test_dir.path}/cvrf-rhba-2020-0017.xml$')
+            self.assertRegex(destination_path, rf'{test_dir.path}/simple.xml$')
             with open(destination_path) as downloaded_file:
                 self.assertTrue(downloaded_file.read())
 
@@ -84,7 +84,7 @@ class TestDownloadAndDecompressSourceToDestination(BaseTestCase):
         sample_file_path = os.path.join(
             os.path.dirname(__file__),
             'files',
-            'cvrf-rhba-2020-0017.xml'
+            'simple.xml'
         )
 
         with TempDirectory() as test_dir:
@@ -94,7 +94,7 @@ class TestDownloadAndDecompressSourceToDestination(BaseTestCase):
             )
 
             self.assertIsNotNone(destination_path)
-            self.assertRegex(destination_path, rf'{test_dir.path}/cvrf-rhba-2020-0017.xml$')
+            self.assertRegex(destination_path, rf'{test_dir.path}/simple.xml$')
             with open(destination_path) as downloaded_file, open(sample_file_path) as sample_file:
                 downloaded_file_contents = downloaded_file.read()
                 self.assertTrue(downloaded_file_contents)
@@ -104,7 +104,7 @@ class TestDownloadAndDecompressSourceToDestination(BaseTestCase):
         sample_file_path = os.path.join(
             os.path.dirname(__file__),
             'files',
-            'cvrf-rhba-2020-0017.xml'
+            'simple.xml'
         )
 
         with TempDirectory() as test_dir:
@@ -114,7 +114,7 @@ class TestDownloadAndDecompressSourceToDestination(BaseTestCase):
             )
 
             self.assertIsNotNone(destination_path)
-            self.assertRegex(destination_path, rf'{test_dir.path}/cvrf-rhba-2020-0017.xml$')
+            self.assertRegex(destination_path, rf'{test_dir.path}/simple.xml$')
             with open(destination_path) as downloaded_file, open(sample_file_path) as sample_file:
                 downloaded_file_contents = downloaded_file.read()
                 self.assertTrue(downloaded_file_contents)
@@ -149,12 +149,12 @@ class TestDownloadSourceToDestination(BaseTestCase):
     def test_https_xml(self):
         with TempDirectory() as test_dir:
             destination_path = download_source_to_destination(
-                source_uri="https://www.redhat.com/security/data/cvrf/2020/cvrf-rhba-2020-0017.xml",
+                source_uri="https://www.w3schools.com/xml/simple.xml",
                 destination_dir=test_dir.path
             )
 
             self.assertIsNotNone(destination_path)
-            self.assertRegex(destination_path, rf'{test_dir.path}/cvrf-rhba-2020-0017.xml$')
+            self.assertRegex(destination_path, rf'{test_dir.path}/simple.xml$')
             with open(destination_path) as downloaded_file:
                 self.assertTrue(downloaded_file.read())
 
@@ -162,7 +162,7 @@ class TestDownloadSourceToDestination(BaseTestCase):
         sample_file_path = os.path.join(
             os.path.dirname(__file__),
             'files',
-            'cvrf-rhba-2020-0017.xml'
+            'simple.xml'
         )
 
         with TempDirectory() as test_dir:
@@ -172,7 +172,7 @@ class TestDownloadSourceToDestination(BaseTestCase):
             )
 
             self.assertIsNotNone(destination_path)
-            self.assertRegex(destination_path, rf'{test_dir.path}/cvrf-rhba-2020-0017.xml$')
+            self.assertRegex(destination_path, rf'{test_dir.path}/simple.xml$')
             with open(destination_path) as downloaded_file, open(sample_file_path) as sample_file:
                 downloaded_file_contents = downloaded_file.read()
                 self.assertTrue(downloaded_file_contents)
@@ -182,7 +182,7 @@ class TestDownloadSourceToDestination(BaseTestCase):
         sample_file_path = os.path.join(
             os.path.dirname(__file__),
             'files',
-            'cvrf-rhba-2020-0017.xml'
+            'simple.xml'
         )
 
         with TempDirectory() as test_dir:
@@ -192,7 +192,7 @@ class TestDownloadSourceToDestination(BaseTestCase):
             )
 
             self.assertIsNotNone(destination_path)
-            self.assertRegex(destination_path, rf'{test_dir.path}/cvrf-rhba-2020-0017.xml$')
+            self.assertRegex(destination_path, rf'{test_dir.path}/simple.xml$')
             with open(destination_path) as downloaded_file, open(sample_file_path) as sample_file:
                 downloaded_file_contents = downloaded_file.read()
                 self.assertTrue(downloaded_file_contents)
