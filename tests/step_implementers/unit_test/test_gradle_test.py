@@ -40,7 +40,7 @@ class TestStepImplementerGradleTest__get_test_result(
                 parent_work_dir_path=parent_work_dir_path,
             )
 
-            file = "../unit_test/TEST-org.acme.rest.json.gradle.AppTest.xml"
+            file = "tests/step_implementers/unit_test/TEST-org.acme.rest.json.gradle.AppTest.xml"
             tree = ET.parse(file)
             root = tree.getroot()
-            self.assertEqual(step_implementer._GradleTest._get_test_result(root=root, attribute="tests"), 2)
+            self.assertEqual(step_implementer._get_test_result(root=root, attribute="tests"), "2")

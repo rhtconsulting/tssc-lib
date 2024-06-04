@@ -118,15 +118,17 @@ class GradleTest(GradleGeneric):
         tree = ET.parse(file)
         root = tree.getroot()
         test_results = dict()
-        for attribute in attributes:
-            test_results[attribute] = self._get_test_result(root, attribute)
+        if root.tag == 'testsuite':
+            for attribute in attributes:
+                test_results[attribute] = self._get_test_result(root, attribute)
 
         return test_results
 
     def _get_test_result(self, root, attribute):
         
-        value = root.find()
-        return 2
+        value = root.attrib[attribute]
+
+        return value
 
 
     def _check_required_test_results(self, root, attributes):
