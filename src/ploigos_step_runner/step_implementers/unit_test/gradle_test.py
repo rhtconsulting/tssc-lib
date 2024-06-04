@@ -15,6 +15,7 @@ class GradleTest(GradleGeneric):
     """`StepImplementer` for the `uat` step using Gradle by invoking the 'test` gradle phase.
     """
 
+    TEST_RESULTS_ROOT_TAG = "testsuite"
     TEST_RESULTS_ATTRIBUTES = ["time", "tests", "failures", "errors", "skipped"]
     TEST_RESULTS_ATTRIBUTES_REQUIRED = ["time", "tests", "failures"]
 
@@ -112,26 +113,45 @@ class GradleTest(GradleGeneric):
                         fullname = os.path.join(test_report_dir, filename)
                         test_results = self._get_test_results_from_file(fullname, self.TEST_RESULTS_ATTRIBUTES)
 
+                        # check for valid file
+                        if not test_results:
+                            step_resluts.message += (f'\nWARNING: Did not find any test results for file {fullname}')
+
+                        # check for required attributes
+                        missing_attributes = self._get_missing_required_test_attributes(test_results, self.TEST_RESULTS_ATTRIBUTES_REQUIRED)
+                        if not missing_attributes:
+                            step_result.message += (f'\nWARNING: Missing required test attributes {missing_attributes} in file {fullname}')
+
+                        # add to consulidated results
+
+            # add test results to the evidence
+
         return step_result
 
     def _get_test_results_from_file(self, file, attributes):
-        tree = ET.parse(file)
-        root = tree.getroot()
         test_results = dict()
-        if root.tag == 'testsuite':
-            for attribute in attributes:
-                test_results[attribute] = self._get_test_result(root, attribute)
+        try:
+            tree = ET.parse(file)
+            root = tree.getroot()
+            if root.tag == self.TEST_RESULTS_ROOT_TAG:
+                for attribute in attributes:
+                    test_results[attribute] = self._get_test_result(root, attribute)
+        except Exception as e:
+            print(f"WARNING: Error parsing file {file} \n {e}")
 
         return test_results
 
     def _get_test_result(self, root, attribute):
-        
         value = root.attrib[attribute]
-
         return value
 
+    def _get_missing_required_test_attributes(self, test_results, required_attributes):
+        missing_attributes = list()
+        for attrib in required_attributes:
+            if attrib not in test_results.keys:
+                missing_attributes.append(attrib)
 
-    def _check_required_test_results(self, root, attributes):
-        pass
+        return missing_attributes
+
 
 

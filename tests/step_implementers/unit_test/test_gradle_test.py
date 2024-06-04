@@ -44,3 +44,22 @@ class TestStepImplementerGradleTest__get_test_result(
             tree = ET.parse(file)
             root = tree.getroot()
             self.assertEqual(step_implementer._get_test_result(root=root, attribute="tests"), "2")
+
+class TestStepImplementerGradleTest__get_test_results_from_file(
+    BaseTestStepImplementerGradleTest
+):
+    def test_result(self):
+        with TempDirectory() as test_dir:
+            # setup test
+            parent_work_dir_path = os.path.join(test_dir.path, 'working')
+            step_config = {
+                'test-reports-dir': '/mock/user-given/test-reports-dir'
+            }
+            step_implementer = self.create_step_implementer(
+                step_config=step_config,
+                parent_work_dir_path=parent_work_dir_path,
+            )
+
+            file = "tests/step_implementers/unit_test/TEST-org.acme.rest.json.gradle.AppTest.xml"
+            expected_results = {'time': '0.192', 'tests': '2', 'failures': '0', 'errors': '0', 'skipped': '0'}
+            self.assertEqual(step_implementer._get_test_results_from_file(file=file, attributes=step_implementer.TEST_RESULTS_ATTRIBUTES), expected_results)
