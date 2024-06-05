@@ -148,7 +148,7 @@ class GradleTest(GradleGeneric):
     def _get_missing_required_test_attributes(self, test_results, required_attributes):
         missing_attributes = list()
         for attrib in required_attributes:
-            if attrib not in test_results.keys:
+            if attrib not in test_results.keys():
                 missing_attributes.append(attrib)
 
         return missing_attributes
