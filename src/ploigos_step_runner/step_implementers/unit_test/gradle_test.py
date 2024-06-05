@@ -106,7 +106,7 @@ class GradleTest(GradleGeneric):
             )
 
             # gather data
-            all_test_results = {}
+            all_test_results = self._get_dict_with_keys_from_list(self.TEST_RESULTS_ATTRIBUTES)
             for test_report_dir in test_report_dirs:
                 for filename in os.listdir(test_report_dir):
                     if filename.endswith('.xml'):
@@ -123,6 +123,7 @@ class GradleTest(GradleGeneric):
                             step_result.message += (f'\nWARNING: Missing required test attributes {missing_attributes} in file {fullname}')
 
                         # add to consulidated results
+                        all_test_results = self._combine_test_results(all_test_results, test_results)
 
             # add test results to the evidence
 
@@ -153,5 +154,24 @@ class GradleTest(GradleGeneric):
 
         return missing_attributes
 
+    def _get_dict_with_keys_from_list(self, l):
+        d = dict()
+        for item in l:
+            d[item] = 0
+        return d
 
+    def _combine_test_results(self, total, current):
+        try:
+            for k in total.keys():
+                if k in current:
+                    string = current[k]
+                    if '.' in string: 
+                        num = float(string)
+                        total[k] = float(total[k]) + num
+                    else:
+                        num = int(string)
+                        total[k] = int(total[k]) + num
+        except Exception as e:
+            print(f"WARNING: Error converting string to number in file {file} \n {e}")       
+        return total
 

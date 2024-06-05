@@ -83,4 +83,40 @@ class TestStepImplementerGradleTest__get_missing_required_test_attributes(
             expected_results = ['tests', 'failures']
             self.assertEqual(step_implementer._get_missing_required_test_attributes(test_results, step_implementer.TEST_RESULTS_ATTRIBUTES_REQUIRED), expected_results)
 
-            
+class TestStepImplementerGradleTest__get_dict_with_keys_from_list(
+    BaseTestStepImplementerGradleTest
+):
+    def test_result(self):
+        with TempDirectory() as test_dir:
+            # setup test
+            parent_work_dir_path = os.path.join(test_dir.path, 'working')
+            step_config = {
+                'test-reports-dir': '/mock/user-given/test-reports-dir'
+            }
+            step_implementer = self.create_step_implementer(
+                step_config=step_config,
+                parent_work_dir_path=parent_work_dir_path,
+            )
+
+            expected_results = {'time': 0, 'tests': 0, 'failures': 0, 'errors': 0, 'skipped': 0}
+            self.assertEqual(step_implementer._get_dict_with_keys_from_list(step_implementer.TEST_RESULTS_ATTRIBUTES), expected_results)
+        
+class TestStepImplementerGradleTest__combine_test_results(
+    BaseTestStepImplementerGradleTest
+):
+    def test_result(self):
+        with TempDirectory() as test_dir:
+            # setup test
+            parent_work_dir_path = os.path.join(test_dir.path, 'working')
+            step_config = {
+                'test-reports-dir': '/mock/user-given/test-reports-dir'
+            }
+            step_implementer = self.create_step_implementer(
+                step_config=step_config,
+                parent_work_dir_path=parent_work_dir_path,
+            )
+
+            current_results = {'time': '0.20', 'tests': '2', 'failures': '0', 'errors': '1', 'skipped': '0'}
+            total_results = {'time': '5.00', 'tests': '10', 'failures': '2', 'errors': '1', 'skipped': '1'}
+            end_results = {'time': 5.2, 'tests': 12, 'failures': 2, 'errors': 2, 'skipped': 1}
+            self.assertEqual(step_implementer._combine_test_results(total_results, current_results), end_results)
