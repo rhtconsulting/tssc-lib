@@ -1,4 +1,5 @@
 import os
+from unittest.mock import patch
 
 from pip._internal.utils.temp_dir import TempDirectory
 
@@ -24,6 +25,61 @@ class BaseTestStepImplementerGradleTest(
             workflow_result=workflow_result,
             parent_work_dir_path=parent_work_dir_path
         )
+
+@patch.object(GradleTest, '_run_gradle_step')
+@patch.object(GradleTest, 'write_working_file', return_value='/mock/gradle_output.txt')
+@patch.object(GradleTest, '_GradleTest__get_test_report_dirs', return_value='/mock/test-results-dir')
+class TestStepImplementerGradleTest__get_test_result(
+    BaseTestStepImplementerGradleTest
+):
+    def test_success_with_report_dir(
+        self,
+        mock_gather_evidence,
+        mock_get_test_report_dir,
+        mock_write_working_file,
+        mock_run_gradle_step
+    ):
+        with TempDirectory() as test_dir:
+            # setup test
+            parent_work_dir_path = os.path.join(test_dir.path, 'working')
+            build_file = os.path.join(test_dir.path, 'mock-build-file.xml')
+            step_config = {
+                'build-file': build_file
+            }
+            step_implementer = self.create_step_implementer(
+                step_config=step_config,
+                parent_work_dir_path=parent_work_dir_path,
+            )
+
+            # run test
+            actual_step_result = step_implementer._run_step()
+
+            # verify results
+            expected_step_result = StepResult(
+                step_name='unit-test',
+                sub_step_name='GradleTest',
+                sub_step_implementer_name='GradleTest'
+            )
+            expected_step_result.add_artifact(
+                description="Standard out and standard error from gradle.",
+                name='maven-output',
+                value='/mock/gradle_output.txt'
+            )
+            expected_step_result.add_artifact(
+                description="Test report generated when running unit tests.",
+                name='test-report',
+                value='/mock/test-results-dir'
+            )
+            self.assertEqual(actual_step_result, expected_step_result)
+
+            mock_run_maven_step.assert_called_once_with(
+                mvn_output_file_path='/mock/gradle_output.txt'
+            )
+            mock_gather_evidence.assert_called_once_with(
+                step_result=Any(StepResult),
+                test_report_dirs='/mock/test-results-dir'                                                                    
+            )
+
 
 class TestStepImplementerGradleTest__get_test_result(
     BaseTestStepImplementerGradleTest

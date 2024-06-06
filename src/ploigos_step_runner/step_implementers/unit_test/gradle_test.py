@@ -97,7 +97,7 @@ class GradleTest(GradleGeneric):
             )
 
         # get test result dirs
-        test_report_dirs = self.get_value(['test-reports-dir', 'test-reports-dirs'])
+        test_report_dirs = self._get_test_report_dirs()
         if test_report_dirs:
             step_result.add_artifact(
                 description="Test report generated when running unit tests.",
@@ -126,8 +126,16 @@ class GradleTest(GradleGeneric):
                         all_test_results = self._combine_test_results(all_test_results, test_results)
 
             # add test results to the evidence
+            for attribute in all_test_results.keys():
+                step_result.add_evidence(
+                    name=attribute,
+                    value=all_test_results[attribute]
+                )
 
         return step_result
+
+    def _get_test_report_dirs(self):
+        return self.get_value(['test-reports-dir', 'test-reports-dirs'])
 
     def _get_test_results_from_file(self, file, attributes):
         test_results = dict()
