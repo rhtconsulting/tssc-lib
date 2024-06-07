@@ -5,7 +5,10 @@ from ploigos_step_runner.exceptions import StepRunnerException
 from ploigos_step_runner.results.step_result import StepResult
 from ploigos_step_runner.step_implementers.shared.gradle_generic import GradleGeneric
 
-DEFAULT_CONFIG = {}
+DEFAULT_CONFIG = {
+    'build-file': 'app/build.gradle',
+}
+
 
 REQUIRED_CONFIG_OR_PREVIOUS_STEP_RESULT_ARTIFACT_KEYS = [
     'build-file'
