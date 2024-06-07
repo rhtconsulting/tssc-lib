@@ -166,7 +166,7 @@ class GradleGeneric(StepImplementer):
             tasks=tasks,
             additional_arguments=additional_arguments,
             build_file=build_file,
-            gradle_console_plain=gradle_console_plain
+            console=gradle_console_plain
         )
 
     def _run_step(self): # pylint: disable=too-many-locals
