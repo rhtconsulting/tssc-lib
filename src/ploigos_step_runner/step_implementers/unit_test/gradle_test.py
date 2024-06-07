@@ -143,7 +143,11 @@ class GradleTest(GradleGeneric):
         return step_result
 
     def _get_test_report_dirs(self):
-        return self.get_value('test-reports-dir')
+        value = self.get_value('test-reports-dir')
+        print("========")
+        print(value)
+        print("========")
+        return value
 
     def _get_test_results_from_file(self, file, attributes):
         test_results = dict()
