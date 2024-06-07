@@ -25,7 +25,7 @@ from ploigos_step_runner.step_implementer import StepImplementer
 from ploigos_step_runner.utils.gradle import run_gradle
 
 DEFAULT_CONFIG = {
-    'build-file': 'build.gradle',
+    'build-file': 'app/build.gradle',
     'gradle-additional-arguments': [],
     'gradle-console-plain': True
 }
@@ -152,7 +152,7 @@ class GradleGeneric(StepImplementer):
 
         tasks = self.gradle_tasks
         build_file = self.get_value('build-file')
-        gradle_console_plain = self.get_value('gradle_console_plain')
+        gradle_console_plain = self.get_value('gradle-console-plain')
 
         additional_arguments = []
         if step_implementer_additional_arguments:
