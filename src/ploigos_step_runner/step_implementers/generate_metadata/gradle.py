@@ -34,7 +34,7 @@ DEFAULT_CONFIG = {
 }
 
 REQUIRED_CONFIG_OR_PREVIOUS_STEP_RESULT_ARTIFACT_KEYS = [
-    'app/build-file'
+    'build-file'
 ]
 
 
