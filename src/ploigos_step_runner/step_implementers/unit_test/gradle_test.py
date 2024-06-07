@@ -108,9 +108,14 @@ class GradleTest(GradleGeneric):
             # gather data
             all_test_results = self._get_dict_with_keys_from_list(self.TEST_RESULTS_ATTRIBUTES)
             for test_report_dir in test_report_dirs:
+                print("+++++++")
+                print(test_report_dir)
+                print("----")
                 for filename in os.listdir(test_report_dir):
+                    print(filename)
                     if filename.endswith('.xml'):
                         fullname = os.path.join(test_report_dir, filename)
+                        print(fullname)
                         test_results = self._get_test_results_from_file(fullname, self.TEST_RESULTS_ATTRIBUTES)
 
                         # check for valid file
