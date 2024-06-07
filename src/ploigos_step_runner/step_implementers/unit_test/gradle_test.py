@@ -121,7 +121,7 @@ class GradleTest(GradleGeneric):
 
                     # check for required attributes
                     missing_attributes = self._get_missing_required_test_attributes(test_results, self.TEST_RESULTS_ATTRIBUTES_REQUIRED)
-                    if not missing_attributes:
+                    if missing_attributes:
                         step_result.message += (f'\nWARNING: Missing required test attributes {missing_attributes} in file {fullname}')
 
                     # add to consulidated results
