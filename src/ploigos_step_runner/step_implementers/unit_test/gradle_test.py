@@ -1,9 +1,9 @@
 import os
 import xml.etree.ElementTree as ET
 
-from src.ploigos_step_runner.exceptions import StepRunnerException
-from src.ploigos_step_runner.results.step_result import StepResult
-from src.ploigos_step_runner.step_implementers.shared.gradle_generic import GradleGeneric
+from ploigos_step_runner.exceptions import StepRunnerException
+from ploigos_step_runner.results.step_result import StepResult
+from ploigos_step_runner.step_implementers.shared.gradle_generic import GradleGeneric
 
 DEFAULT_CONFIG = {}
 
