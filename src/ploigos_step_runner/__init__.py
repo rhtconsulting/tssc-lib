@@ -733,6 +733,13 @@ From least precedence to highest precedence.
           # npm-envs:
           #   ENV_VAR1: VALUE1
           #   ENV_VAR2: VALUE2
+          
+      - implementer: GradleTest
+        config:
+          # Optional.
+          # npm-envs:
+          #   ENV_VAR1: VALUE1
+          #   ENV_VAR2: VALUE2
 
       push-artifacts:
       # WARNING: not yet implemented
