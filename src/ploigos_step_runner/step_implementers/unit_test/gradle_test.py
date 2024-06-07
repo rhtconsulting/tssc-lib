@@ -100,38 +100,32 @@ class GradleTest(GradleGeneric):
             )
 
         # get test result dirs
-        test_report_dirs = self._get_test_report_dirs()
-        if test_report_dirs:
+        test_report_dir = self._get_test_report_dir()
+        if test_report_dir:
             step_result.add_artifact(
                 description="Test report generated when running unit tests.",
                 name='test-report',
-                value=test_report_dirs
+                value=test_report_dir
             )
 
             # gather data
             all_test_results = self._get_dict_with_keys_from_list(self.TEST_RESULTS_ATTRIBUTES)
-            for test_report_dir in test_report_dirs:
-                print("+++++++")
-                print(test_report_dir)
-                print("----")
-                for filename in os.listdir(test_report_dir):
-                    print(filename)
-                    if filename.endswith('.xml'):
-                        fullname = os.path.join(test_report_dir, filename)
-                        print(fullname)
-                        test_results = self._get_test_results_from_file(fullname, self.TEST_RESULTS_ATTRIBUTES)
+            for filename in os.listdir(test_report_dir):
+                if filename.endswith('.xml'):
+                    fullname = os.path.join(test_report_dir, filename)
+                    test_results = self._get_test_results_from_file(fullname, self.TEST_RESULTS_ATTRIBUTES)
 
-                        # check for valid file
-                        if not test_results:
-                            step_resluts.message += (f'\nWARNING: Did not find any test results for file {fullname}')
+                    # check for valid file
+                    if not test_results:
+                        step_resluts.message += (f'\nWARNING: Did not find any test results for file {fullname}')
 
-                        # check for required attributes
-                        missing_attributes = self._get_missing_required_test_attributes(test_results, self.TEST_RESULTS_ATTRIBUTES_REQUIRED)
-                        if not missing_attributes:
-                            step_result.message += (f'\nWARNING: Missing required test attributes {missing_attributes} in file {fullname}')
+                    # check for required attributes
+                    missing_attributes = self._get_missing_required_test_attributes(test_results, self.TEST_RESULTS_ATTRIBUTES_REQUIRED)
+                    if not missing_attributes:
+                        step_result.message += (f'\nWARNING: Missing required test attributes {missing_attributes} in file {fullname}')
 
-                        # add to consulidated results
-                        all_test_results = self._combine_test_results(all_test_results, test_results)
+                    # add to consulidated results
+                    all_test_results = self._combine_test_results(all_test_results, test_results)
 
             # add test results to the evidence
             for attribute in all_test_results.keys():
@@ -142,12 +136,8 @@ class GradleTest(GradleGeneric):
 
         return step_result
 
-    def _get_test_report_dirs(self):
-        value = self.get_value('test-reports-dir')
-        print("========")
-        print(value)
-        print("========")
-        return value
+    def _get_test_report_dir(self):
+        return self.get_value('test-reports-dir')
 
     def _get_test_results_from_file(self, file, attributes):
         test_results = dict()
