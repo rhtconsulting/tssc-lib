@@ -30,7 +30,7 @@ from ploigos_step_runner.step_implementers.shared import GradleGeneric
 from ploigos_step_runner.utils.gradle import run_gradle, GradleGroovyParser
 
 DEFAULT_CONFIG = {
-    'build-file': 'build.gradle',
+    'build-file': 'app/build.gradle',
 }
 
 REQUIRED_CONFIG_OR_PREVIOUS_STEP_RESULT_ARTIFACT_KEYS = [

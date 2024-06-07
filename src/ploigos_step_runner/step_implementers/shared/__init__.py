@@ -12,6 +12,7 @@ from ploigos_step_runner.step_implementers.shared.maven_generic import \
 from ploigos_step_runner.step_implementers.shared.maven_test_reporting_mixin import \
     MavenTestReportingMixin
 from ploigos_step_runner.step_implementers.shared.npm_generic import NpmGeneric
+from ploigos_step_runner.step_implementers.shared.gradle_generic import GradleGeneric
 from ploigos_step_runner.step_implementers.shared.npm_xunit_generic import \
     NpmXunitGeneric
 from ploigos_step_runner.step_implementers.shared.openscap_generic import \
