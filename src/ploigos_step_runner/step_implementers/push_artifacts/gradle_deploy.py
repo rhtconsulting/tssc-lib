@@ -34,7 +34,7 @@ class GradleDeploy(GradleGeneric):
             parent_work_dir_path=parent_work_dir_path,
             config=config,
             environment=environment,
-            gradle_tasks=['test']
+            gradle_tasks=['artifactoryPublish']
         )
 
     @staticmethod
