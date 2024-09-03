@@ -369,6 +369,15 @@ From least precedence to highest precedence.
           # Required.
           # Id to the artifact repository to push the artifact to.
           maven-push-artifact-repo-id: ''
+      - implementer: GradelDeploy
+        config: {
+          # Required.
+          # URL to the artifact repository to push the artifact to.
+          # maven-push-artifact-repo-url: ''
+
+          # Required.
+          # Id to the artifact repository to push the artifact to.
+          # maven-push-artifact-repo-id: ''
 
         }
 
