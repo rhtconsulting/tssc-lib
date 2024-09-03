@@ -18,9 +18,6 @@ class GradleDeploy(GradleGeneric):
     """`StepImplementer` for the `uat` step using Gradle by invoking the 'test` gradle phase.
     """
 
-    TEST_RESULTS_ROOT_TAG = "testsuite"
-    TEST_RESULTS_ATTRIBUTES = ["time", "tests", "failures", "errors", "skipped"]
-    TEST_RESULTS_ATTRIBUTES_REQUIRED = ["time", "tests", "failures"]
 
     def __init__(  # pylint: disable=too-many-arguments
         self,
@@ -80,108 +77,30 @@ class GradleDeploy(GradleGeneric):
 
         step_result = StepResult.from_step_implementer(self)
 
-        # run the tests
-        print("Run unit tests")
-        gradle_output_file_path = self.write_working_file('gradle_output.txt')
+        # Get config items
+        maven_push_artifact_repo_id = self.get_value('maven-push-artifact-repo-id')
+        maven_push_artifact_repo_url = self.get_value('maven-push-artifact-repo-url')
+        version = self.get_value('version')
+
+        # push the artifacts
+        mvn_update_version_output_file_path = self.write_working_file('mvn_versions_set_output.txt')
+        mvn_push_artifacts_output_file_path = self.write_working_file('mvn_deploy_output.txt')
         try:
-            # execute maven step (params come from config)
+            # execute Gradle Artifactory publish step (params come from config)
+            print("Push packaged maven artifacts")
             self._run_gradle_step(
-                gradle_output_file_path=gradle_output_file_path
+                print("do something here")
             )
         except StepRunnerException as error:
             step_result.success = False
-            step_result.message = "Error running Gradle. " \
-                                  f"More details maybe found in report artifacts: {error}"
+            step_result.message = "Error running 'gradle deploy' to push artifacts. " \
+                f"More details maybe found in 'gradle-output' report artifact: {error}"
         finally:
             step_result.add_artifact(
-                description="Standard out and standard error from Gradle.",
-                name='gradle-output',
-                value=gradle_output_file_path
+                description="Standard out and standard error from running gradle to " \
+                    "push artifacts to repository.",
+                name='gradle-push-artifacts-output',
+                value=mvn_push_artifacts_output_file_path
             )
-
-        # get test result dirs
-        test_report_dir = self._get_test_report_dir()
-        if test_report_dir:
-            step_result.add_artifact(
-                description="Test report generated when running unit tests.",
-                name='test-report',
-                value=test_report_dir
-            )
-
-            # gather data
-            all_test_results = self._get_dict_with_keys_from_list(self.TEST_RESULTS_ATTRIBUTES)
-            for filename in os.listdir(test_report_dir):
-                if filename.endswith('.xml'):
-                    fullname = os.path.join(test_report_dir, filename)
-                    test_results = self._get_test_results_from_file(fullname, self.TEST_RESULTS_ATTRIBUTES)
-
-                    # check for valid file
-                    if not test_results:
-                        step_resluts.message += (f'\nWARNING: Did not find any test results for file {fullname}')
-
-                    # check for required attributes
-                    missing_attributes = self._get_missing_required_test_attributes(test_results, self.TEST_RESULTS_ATTRIBUTES_REQUIRED)
-                    if missing_attributes:
-                        step_result.message += (f'\nWARNING: Missing required test attributes {missing_attributes} in file {fullname}')
-
-                    # add to consulidated results
-                    all_test_results = self._combine_test_results(all_test_results, test_results)
-
-            # add test results to the evidence
-            for attribute in all_test_results.keys():
-                step_result.add_evidence(
-                    name=attribute,
-                    value=all_test_results[attribute]
-                )
 
         return step_result
-
-    def _get_test_report_dir(self):
-        return self.get_value('test-reports-dir')
-
-    def _get_test_results_from_file(self, file, attributes):
-        test_results = dict()
-        try:
-            tree = ET.parse(file)
-            root = tree.getroot()
-            if root.tag == self.TEST_RESULTS_ROOT_TAG:
-                for attribute in attributes:
-                    test_results[attribute] = self._get_test_result(root, attribute)
-        except Exception as e:
-            print(f"WARNING: Error parsing file {file} \n {e}")
-
-        return test_results
-
-    def _get_test_result(self, root, attribute):
-        value = root.attrib[attribute]
-        return value
-
-    def _get_missing_required_test_attributes(self, test_results, required_attributes):
-        missing_attributes = list()
-        for attrib in required_attributes:
-            if attrib not in test_results.keys():
-                missing_attributes.append(attrib)
-
-        return missing_attributes
-
-    def _get_dict_with_keys_from_list(self, l):
-        d = dict()
-        for item in l:
-            d[item] = 0
-        return d
-
-    def _combine_test_results(self, total, current):
-        try:
-            for k in total.keys():
-                if k in current:
-                    string = current[k]
-                    if '.' in string: 
-                        num = float(string)
-                        total[k] = float(total[k]) + num
-                    else:
-                        num = int(string)
-                        total[k] = int(total[k]) + num
-        except Exception as e:
-            print(f"WARNING: Error converting string to number in file {file} \n {e}")       
-        return total
-
