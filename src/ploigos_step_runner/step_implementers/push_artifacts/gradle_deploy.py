@@ -78,9 +78,9 @@ class GradleDeploy(GradleGeneric):
         step_result = StepResult.from_step_implementer(self)
 
         # Get config items
-        maven_push_artifact_repo_id = self.get_value('maven-push-artifact-repo-id')
-        maven_push_artifact_repo_url = self.get_value('maven-push-artifact-repo-url')
-        version = self.get_value('version')
+        # maven_push_artifact_repo_id = self.get_value('maven-push-artifact-repo-id')
+        # maven_push_artifact_repo_url = self.get_value('maven-push-artifact-repo-url')
+        # version = self.get_value('version')
 
         # push the artifacts
         gradle_output_file_path = self.write_working_file('gradle_deploy_output.txt')
@@ -89,8 +89,7 @@ class GradleDeploy(GradleGeneric):
             # execute Gradle Artifactory publish step (params come from config)
             print("Push packaged maven artifacts")
             self._run_gradle_step(
-                gradle_output_file_path=gradle_output_file_path,
-                print("do something here")
+                gradle_output_file_path=gradle_output_file_path
             )
         except StepRunnerException as error:
             step_result.success = False
