@@ -83,12 +83,13 @@ class GradleDeploy(GradleGeneric):
         version = self.get_value('version')
 
         # push the artifacts
-        mvn_update_version_output_file_path = self.write_working_file('mvn_versions_set_output.txt')
-        mvn_push_artifacts_output_file_path = self.write_working_file('mvn_deploy_output.txt')
+        gradle_output_file_path = self.write_working_file('gradle_deploy_output.txt')
+
         try:
             # execute Gradle Artifactory publish step (params come from config)
             print("Push packaged maven artifacts")
             self._run_gradle_step(
+                gradle_output_file_path=gradle_output_file_path
                 print("do something here")
             )
         except StepRunnerException as error:
@@ -100,7 +101,8 @@ class GradleDeploy(GradleGeneric):
                 description="Standard out and standard error from running gradle to " \
                     "push artifacts to repository.",
                 name='gradle-push-artifacts-output',
-                value=mvn_push_artifacts_output_file_path
+                value=gradle_output_file_path
+
             )
 
         return step_result
