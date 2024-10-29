@@ -89,7 +89,7 @@ class GradleDeploy(GradleGeneric):
             # execute Gradle Artifactory publish step (params come from config)
             print("Push packaged gradle artifacts")
             self._run_gradle_step(
-                printf("artifactory user: " + self.get_value('artifactory-user'))
+                print("artifactory user: " + self.get_value('artifactory-user'))
                 gradle_output_file_path=gradle_output_file_path
             )
         except StepRunnerException as error:
