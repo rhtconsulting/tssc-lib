@@ -35,8 +35,8 @@ class GradleDeploy(GradleGeneric):
             environment=environment,
             gradle_tasks=['artifactoryPublish']
         )
-        step_result.message = f"environment : {self.environment}"
-        step_result.message = f"config : {self.config}"
+        print(f"environment : {self.environment}")
+        print(f"config : {self.config}")
     @staticmethod
     def step_implementer_config_defaults():
         """Getter for the StepImplementer's configuration defaults.
