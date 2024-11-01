@@ -123,6 +123,9 @@ class GradleDeploy(GradleGeneric):
             step_result.success = False
             step_result.message = "Error running 'gradle deploy' to push artifacts. " \
                 f"More details maybe found in 'gradle-output' report artifact: {error}"
+            step_result.message = f"environment : {self.environment}"
+            step_result.message = f"config : {self.config}"
+
         finally:
             step_result.add_artifact(
                 description="Standard out and standard error from running gradle to " \
