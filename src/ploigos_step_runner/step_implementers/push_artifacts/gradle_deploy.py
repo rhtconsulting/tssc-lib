@@ -70,7 +70,7 @@ class GradleDeploy(GradleGeneric):
 
 
     def decrypt_sops_file(file_path):
-    """Decrypt a SOPS-encrypted file."""
+        """Decrypt a SOPS-encrypted file."""
         try:
           # Use sops to decrypt the file
            result = subprocess.run(['sops', '-d', file_path], capture_output=True, check=True)
@@ -80,7 +80,7 @@ class GradleDeploy(GradleGeneric):
            print(f"Error decrypting file: {e}")
            return None
     def set_env_variables(config):
-    """Set environment variables from the config dictionary."""
+        """Set environment variables from the config dictionary."""
         for key, value in config.items():
             os.environ[key] = str(value)
             print(f"{key}: {value}")
