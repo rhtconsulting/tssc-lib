@@ -17,7 +17,7 @@ REQUIRED_CONFIG_OR_PREVIOUS_STEP_RESULT_ARTIFACT_KEYS = [
 class GradleDeploy(GradleGeneric):
     """`StepImplementer` for the `uat` step using Gradle by invoking the 'test` gradle phase.
     """
-
+    def artifactoryUser = project.findProperty('artifactory_user')
 
     def __init__(  # pylint: disable=too-many-arguments
         self,
@@ -89,10 +89,11 @@ class GradleDeploy(GradleGeneric):
             # execute Gradle Artifactory publish step (params come from config)
             print("Push packaged gradle artifacts")
             #print("artifactory: " + self.get_value('artifactory-user'))
-            print(self.get_value('artifactory-user'))
-           def artifactoryUser = project.findProperty('artifactory_user') ?: 'default_username'
+            print(self.get_value('artifactory_user'))
+    
+    
 
-           print(artifactoryUser)
+            print(artifactoryUser)
             print("artifactory Line 93")
 
             self._run_gradle_step(
