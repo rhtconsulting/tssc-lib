@@ -1,5 +1,7 @@
 import os
 import xml.etree.ElementTree as ET
+import subprocess
+import yaml
 
 from ploigos_step_runner.exceptions import StepRunnerException
 from ploigos_step_runner.results.step_result import StepResult
@@ -66,6 +68,24 @@ class GradleDeploy(GradleGeneric):
         """
         return REQUIRED_CONFIG_OR_PREVIOUS_STEP_RESULT_ARTIFACT_KEYS
 
+
+   def decrypt_sops_file(file_path):
+    """Decrypt a SOPS-encrypted file."""
+       try:
+          # Use sops to decrypt the file
+          result = subprocess.run(['sops', '-d', file_path], capture_output=True, check=True)
+          decrypted_content = result.stdout.decode('utf-8')
+          return yaml.safe_load(decrypted_content)  # Load as a Python dictionary
+       except subprocess.CalledProcessError as e:
+          print(f"Error decrypting file: {e}")
+          return None
+    def set_env_variables(config):
+    """Set environment variables from the config dictionary."""
+        for key, value in config.items():
+            os.environ[key] = str(value)
+            print(f"{key}: {value}")
+
+
     def _run_step(self):
         """Runs the step implemented by this StepImplementer.
 
@@ -97,6 +117,8 @@ class GradleDeploy(GradleGeneric):
                 gradle_output_file_path=gradle_output_file_path
 
             )
+            config = decrypt_sops_file('/home/jenkins/agent/workspace/ot-gradle_feature_gradle-publish/cicd/ploigos-step-runner-config/config-secrets.yml')
+
         except StepRunnerException as error:
             step_result.success = False
             step_result.message = "Error running 'gradle deploy' to push artifacts. " \
