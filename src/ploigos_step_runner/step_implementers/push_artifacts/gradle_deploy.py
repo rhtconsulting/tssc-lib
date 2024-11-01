@@ -90,8 +90,9 @@ class GradleDeploy(GradleGeneric):
             print("Push packaged gradle artifacts")
             #print("artifactory: " + self.get_value('artifactory-user'))
             print(self.get_value('artifactory-user'))
-            print(System.getenv('ARTIFACTORY_USER'))
-            print(System.getenv('ARTIFACTORY_PASSWORD'))
+           def artifactoryUser = project.findProperty('artifactory_user') ?: 'default_username'
+
+           print(artifactoryUser)
             print("artifactory Line 93")
 
             self._run_gradle_step(
