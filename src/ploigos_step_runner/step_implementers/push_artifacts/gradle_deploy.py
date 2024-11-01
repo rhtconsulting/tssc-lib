@@ -88,7 +88,9 @@ class GradleDeploy(GradleGeneric):
         try:
             # execute Gradle Artifactory publish step (params come from config)
             print("Push packaged gradle artifacts")
-            print("artifactory: " + self.get_value('artifactory-user'))
+            #print("artifactory: " + self.get_value('artifactory-user'))
+            print(self.get_value('artifactory-user'))
+            print("artifactory Line 93")
 
             self._run_gradle_step(
                 gradle_output_file_path=gradle_output_file_path
