@@ -69,16 +69,16 @@ class GradleDeploy(GradleGeneric):
         return REQUIRED_CONFIG_OR_PREVIOUS_STEP_RESULT_ARTIFACT_KEYS
 
 
-   def decrypt_sops_file(file_path):
+    def decrypt_sops_file(file_path):
     """Decrypt a SOPS-encrypted file."""
-       try:
+        try:
           # Use sops to decrypt the file
-          result = subprocess.run(['sops', '-d', file_path], capture_output=True, check=True)
-          decrypted_content = result.stdout.decode('utf-8')
-          return yaml.safe_load(decrypted_content)  # Load as a Python dictionary
-       except subprocess.CalledProcessError as e:
-          print(f"Error decrypting file: {e}")
-          return None
+           result = subprocess.run(['sops', '-d', file_path], capture_output=True, check=True)
+           decrypted_content = result.stdout.decode('utf-8')
+           return yaml.safe_load(decrypted_content)  # Load as a Python dictionary
+        except subprocess.CalledProcessError as e:
+           print(f"Error decrypting file: {e}")
+           return None
     def set_env_variables(config):
     """Set environment variables from the config dictionary."""
         for key, value in config.items():
