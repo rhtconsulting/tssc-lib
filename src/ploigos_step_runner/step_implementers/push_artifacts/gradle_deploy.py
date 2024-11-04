@@ -9,29 +9,21 @@ from ploigos_step_runner.step_implementers.shared.gradle_generic import GradleGe
 
 DEFAULT_CONFIG = {
     'build-file': 'app/build.gradle',
-    'properties-file' : 'gradle.properties'
+    'properties-file': 'gradle.properties'
 }
 
-
 REQUIRED_CONFIG_OR_PREVIOUS_STEP_RESULT_ARTIFACT_KEYS = [
-    'build-file'
-    'properties-file'
-    'gradle-token'
+    'build-file',
+    'properties-file',
+    'gradle-token',
     'gradle-token-alpha'
 ]
 
 class GradleDeploy(GradleGeneric):
     """`StepImplementer` for the `uat` step using Gradle by invoking the 'test` gradle phase.
     """
-    
 
-    def __init__(  # pylint: disable=too-many-arguments
-        self,
-        workflow_result,
-        parent_work_dir_path,
-        config,
-        environment=None
-    ):
+    def __init__(self, workflow_result, parent_work_dir_path, config, environment=None):  # pylint: disable=too-many-arguments
         super().__init__(
             workflow_result=workflow_result,
             parent_work_dir_path=parent_work_dir_path,
@@ -41,6 +33,7 @@ class GradleDeploy(GradleGeneric):
         )
         print(f"environment : {self.environment}")
         print(f"config : {self.config}")
+
     @staticmethod
     def step_implementer_config_defaults():
         """Getter for the StepImplementer's configuration defaults.
@@ -73,54 +66,52 @@ class GradleDeploy(GradleGeneric):
         """
         return REQUIRED_CONFIG_OR_PREVIOUS_STEP_RESULT_ARTIFACT_KEYS
 
-
     # def decrypt_sops_file(file_path):
     #     """Decrypt a SOPS-encrypted file."""
     #     try:
-    #       # Use sops to decrypt the file
-    #        result = subprocess.run(['sops', '-d', file_path], capture_output=True, check=True)
-    #        decrypted_content = result.stdout.decode('utf-8')
-    #        return yaml.safe_load(decrypted_content)  # Load as a Python dictionary
+    #         # Use sops to decrypt the file
+    #         result = subprocess.run(['sops', '-d', file_path], capture_output=True, check=True)
+    #         decrypted_content = result.stdout.decode('utf-8')
+    #         return yaml.safe_load(decrypted_content)  # Load as a Python dictionary
     #     except subprocess.CalledProcessError as e:
-    #        print(f"Error decrypting file: {e}")
-    #        return None
+    #         print(f"Error decrypting file: {e}")
+    #         return None
+
     # def set_env_variables(config):
     #     """Set environment variables from the config dictionary."""
     #     for key, value in config.items():
     #         os.environ[key] = str(value)
     #         print(f"{key}: {value}")
 
-    def read_and_replace_password(self):
-    """Read a properties file, replace the Artifactory password, and save the changes."""
+    def read_and_replace_password(self, properties_file, new_password):
+        """Read a properties file, replace the Artifactory password, and save the changes."""
         properties = {}
 
-    # Read the properties file
-        with open(gradle.properties, 'r') as file:
+        # Read the properties file
+        with open(properties_file, 'r') as file:
             for line in file:
-            # Skip comments and empty lines
-            line = line.strip()
-            if line and not line.startswith('#'):
-                key, value = line.split('=', 1)  # Split on the first '='
-                properties[key] = value
+                # Skip comments and empty lines
+                line = line.strip()
+                if line and not line.startswith('#'):
+                    key, value = line.split('=', 1)  # Split on the first '='
+                    properties[key] = value
 
         # Replace the Artifactory password value
-            if 'artifactory_password' in properties:
+        if 'artifactory_password' in properties:
             properties['artifactory_password'] = new_password
 
         # Write the modified properties back to the file
-        with open(gradle.properties, 'w') as file:  # Ensure file_path is passed here
+        with open(properties_file, 'w') as file:
             for key, value in properties.items():
-            file.write(f"{key}={value}\n")
+                file.write(f"{key}={value}\n")
 
         print(f"Password updated to: {new_password}")
 
     # Example usage
-        if __name__ == "__main__":
+    if __name__ == "__main__":
         config_file = 'gradle.properties'  # Specify your properties file path
         new_password_value = 'new_secure_password'  # New password value
         read_and_replace_password(config_file, new_password_value)
-
-
 
     def _run_step(self):
         """Runs the step implemented by this StepImplementer.
@@ -144,14 +135,13 @@ class GradleDeploy(GradleGeneric):
         try:
             # execute Gradle Artifactory publish step (params come from config)
             print("Push packaged gradle artifacts")
-            #print("artifactory: " + self.get_value('artifactory-user'))
-            #print(project.findProperty(('artifactory_user')))
-            #artifactoryUser = project.findProperty('artifactory_user')
-            #print("artifactory Line 91")
+            # print("artifactory: " + self.get_value('artifactory-user'))
+            # print(project.findProperty(('artifactory_user')))
+            # artifactoryUser = project.findProperty('artifactory_user')
+            # print("artifactory Line 91")
 
             self._run_gradle_step(
                 gradle_output_file_path=gradle_output_file_path
-
             )
             # config = decrypt_sops_file('/home/jenkins/agent/workspace/ot-gradle_feature_gradle-publish/cicd/ploigos-step-runner-config/config-secrets.yml')
 
@@ -168,7 +158,6 @@ class GradleDeploy(GradleGeneric):
                     "push artifacts to repository.",
                 name='gradle-push-artifacts-output',
                 value=gradle_output_file_path
-
             )
 
         return step_result
