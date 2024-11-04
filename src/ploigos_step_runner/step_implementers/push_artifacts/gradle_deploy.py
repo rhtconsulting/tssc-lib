@@ -9,11 +9,15 @@ from ploigos_step_runner.step_implementers.shared.gradle_generic import GradleGe
 
 DEFAULT_CONFIG = {
     'build-file': 'app/build.gradle',
+    'properties-file' : 'gradle.properties'
 }
 
 
 REQUIRED_CONFIG_OR_PREVIOUS_STEP_RESULT_ARTIFACT_KEYS = [
     'build-file'
+    'properties-file'
+    'gradle-token'
+    'gradle-token-alpha'
 ]
 
 class GradleDeploy(GradleGeneric):
@@ -85,6 +89,37 @@ class GradleDeploy(GradleGeneric):
     #     for key, value in config.items():
     #         os.environ[key] = str(value)
     #         print(f"{key}: {value}")
+
+    def read_and_replace_password(self):
+    """Read a properties file, replace the Artifactory password, and save the changes."""
+        properties = {}
+
+    # Read the properties file
+        with open(gradle.properties, 'r') as file:
+            for line in file:
+            # Skip comments and empty lines
+            line = line.strip()
+            if line and not line.startswith('#'):
+                key, value = line.split('=', 1)  # Split on the first '='
+                properties[key] = value
+
+        # Replace the Artifactory password value
+            if 'artifactory_password' in properties:
+            properties['artifactory_password'] = new_password
+
+        # Write the modified properties back to the file
+        with open(gradle.properties, 'w') as file:  # Ensure file_path is passed here
+            for key, value in properties.items():
+            file.write(f"{key}={value}\n")
+
+        print(f"Password updated to: {new_password}")
+
+    # Example usage
+        if __name__ == "__main__":
+        config_file = 'gradle.properties'  # Specify your properties file path
+        new_password_value = 'new_secure_password'  # New password value
+        read_and_replace_password(config_file, new_password_value)
+
 
 
     def _run_step(self):
