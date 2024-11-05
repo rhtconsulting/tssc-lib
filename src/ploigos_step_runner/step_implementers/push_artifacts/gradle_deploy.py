@@ -130,6 +130,7 @@ class GradleDeploy(GradleGeneric):
             Object containing the dictionary results of this step.
         """
 
+        self.read_and_replace_password(self)
         step_result = StepResult.from_step_implementer(self)
 
         # Get config items
