@@ -85,35 +85,35 @@ class GradleDeploy(GradleGeneric):
     #         os.environ[key] = str(value)
     #         print(f"{key}: {value}")
 
-    def read_and_replace_password(self):
-        """Read a properties file, replace the Artifactory password, and save the changes."""
-        properties = {}
-        properties_file = self.get_value("properties_file")
-        artifactory_password = self.get_value("gradle-token-alpha")
+    # def read_and_replace_password(self):
+    #     """Read a properties file, replace the Artifactory password, and save the changes."""
+    #     properties = {}
+    #     properties_file = self.get_value("properties_file")
+    #     artifactory_password = self.get_value("gradle-token-alpha")
 
-        # Read the properties file
-        with open(properties_file, "r") as file:
-            for line in file:
-                # Skip comments and empty lines
-                line = line.strip()
-                if line and not line.startswith("#"):
-                    key, value = line.split("=", 1)  # Split on the first '='
-                    properties[key] = value
+    #     # Read the properties file
+    #     with open(properties_file, "r") as file:
+    #         for line in file:
+    #             # Skip comments and empty lines
+    #             line = line.strip()
+    #             if line and not line.startswith("#"):
+    #                 key, value = line.split("=", 1)  # Split on the first '='
+    #                 properties[key] = value
 
-        # Replace the Artifactory password value
-        if "artifactory_password" in properties:
-            properties["artifactory_password"] = artifactory_password
+    #     # Replace the Artifactory password value
+    #     if "artifactory_password" in properties:
+    #         properties["artifactory_password"] = artifactory_password
 
-        # Write the modified properties back to the file
-        with open(properties_file, "w") as file:
-            for key, value in properties.items():
-                file.write(f"{key}={value}\n")
+    #     # Write the modified properties back to the file
+    #     with open(properties_file, "w") as file:
+    #         for key, value in properties.items():
+    #             file.write(f"{key}={value}\n")
 
-        # print out the properties file
-        with open(properties_file, "r") as file:
-            content = file.read()
-            print("\n build.properties file: ")
-            print(content)
+    #     # print out the properties file
+    #     with open(properties_file, "r") as file:
+    #         content = file.read()
+    #         print("\n build.properties file: ")
+    #         print(content)
 
     def _run_step(self):
         """Runs the step implemented by this StepImplementer.
