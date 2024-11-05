@@ -115,12 +115,6 @@ class GradleDeploy(GradleGeneric):
             print("\n build.properties file: ")
             print(content)
 
-    # Example usage
-    if __name__ == "__main__":
-        config_file = "gradle.properties"  # Specify your properties file path
-        new_password_value = "new_secure_password"  # New password value
-        read_and_replace_password(config_file, new_password_value)
-
     def _run_step(self):
         """Runs the step implemented by this StepImplementer.
 
