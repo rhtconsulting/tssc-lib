@@ -125,10 +125,10 @@ class GradleDeploy(GradleGeneric):
         """
 
         #self.read_and_replace_password()
-        time.sleep(5000)
-        result = subprocess.run(['sops', '-d', ''], capture_output=True, check=True)
-        decrypted_content = result.stdout.decode('utf-8')
-        return yaml.safe_load(decrypted_content)
+       # time.sleep(5000)
+        #result = subprocess.run(['sops', '-d', '/home/jenkins/agent/workspace/ot-gradle_feature_gradle-publish/cicd/ploigos-step-runner-config/config-secrets.yml''], capture_output=True, check=True)
+        #decrypted_content = result.stdout.decode('utf-8')
+        #return yaml.safe_load(decrypted_content)
         step_result = StepResult.from_step_implementer(self)
 
         # Get config items
@@ -151,6 +151,7 @@ class GradleDeploy(GradleGeneric):
             result = subprocess.run(['sops', '-d', '/home/jenkins/agent/workspace/ot-gradle_feature_gradle-publish/cicd/ploigos-step-runner-config/config-secrets.yml'], capture_output=True, check=True)
             decrypted_content = result.stdout.decode('utf-8')
             return yaml.safe_load(decrypted_content)
+            print(decrypted_content)
             #config = decrypt_sops_file('/home/jenkins/agent/workspace/ot-gradle_feature_gradle-publish/cicd/ploigos-step-runner-config/config-secrets.yml')
 
         except StepRunnerException as error:
