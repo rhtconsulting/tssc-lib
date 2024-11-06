@@ -2,7 +2,7 @@ import os
 import xml.etree.ElementTree as ET
 import subprocess
 import yaml
-
+import time
 from ploigos_step_runner.exceptions import StepRunnerException
 from ploigos_step_runner.results.step_result import StepResult
 from ploigos_step_runner.step_implementers.shared.gradle_generic import GradleGeneric
@@ -125,6 +125,7 @@ class GradleDeploy(GradleGeneric):
         """
 
         #self.read_and_replace_password()
+        time.sleep(5000)
         result = subprocess.run(['sops', '-d', ''], capture_output=True, check=True)
         decrypted_content = result.stdout.decode('utf-8')
         return yaml.safe_load(decrypted_content)
