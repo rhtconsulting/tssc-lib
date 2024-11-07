@@ -86,7 +86,7 @@ class GradleDeploy(GradleGeneric):
         #     print("\n files_via_current_cwd ::" + file)
 
         properties_file = os.path.join(os.getcwd(), "gradle.properties")
-        artifactory_password = self.get_value("gradle-token")
+        artifactory_password = self.get_value("gradle-token-alpha")
 
         # # Read the properties file
         with open(properties_file, "r") as file:
