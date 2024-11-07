@@ -71,45 +71,46 @@ class GradleDeploy(GradleGeneric):
         """Read a properties file, replace the Artifactory password, and save the changes."""
         properties = {}
 
-        current_path = Path.cwd()
-        print("current_path")
-        print(current_path)
-        files_via_Path = os.listdir(current_path)
-        for file in files_via_Path:
-            print("\n files_via_Path ::" + file)
+        # current_path = Path.cwd()
+        # print("current_path")
+        # print(current_path)
+        # files_via_Path = os.listdir(current_path)
+        # for file in files_via_Path:
+        #     print("\n files_via_Path ::" + file)
 
-        current_working_directory = os.getcwd()
-        print("current_working_directory")
-        print(current_working_directory)
-        files_via_current_cwd = os.listdir(current_working_directory)
-        for file in files_via_current_cwd:
-            print("\n files_via_current_cwd ::" + file)
-        # properties_file = self.get_value("properties_file")
-        # artifactory_password = self.get_value("gradle-token-alpha")
+        # current_working_directory = os.getcwd()
+        # print("current_working_directory")
+        # print(current_working_directory)
+        # files_via_current_cwd = os.listdir(current_working_directory)
+        # for file in files_via_current_cwd:
+        #     print("\n files_via_current_cwd ::" + file)
+
+        properties_file = os.path.join(os.getcwd(), "gradle.properties")
+        artifactory_password = self.get_value("gradle-token-alpha")
 
         # # Read the properties file
-        # with open(properties_file, "r") as file:
-        #     for line in file:
-        #         # Skip comments and empty lines
-        #         line = line.strip()
-        #         if line and not line.startswith("#"):
-        #             key, value = line.split("=", 1)  # Split on the first '='
-        #             properties[key] = value
+        with open(properties_file, "r") as file:
+            for line in file:
+                # Skip comments and empty lines
+                line = line.strip()
+                if line and not line.startswith("#"):
+                    key, value = line.split("=", 1)  # Split on the first '='
+                    properties[key] = value
 
-        # # Replace the Artifactory password value
-        # if "artifactory_password" in properties:
-        #     properties["artifactory_password"] = artifactory_password
+        # Replace the Artifactory password value
+        if "artifactory_password" in properties:
+            properties["artifactory_password"] = artifactory_password
 
-        # # Write the modified properties back to the file
-        # with open(properties_file, "w") as file:
-        #     for key, value in properties.items():
-        #         file.write(f"{key}={value}\n")
+        # Write the modified properties back to the file
+        with open(properties_file, "w") as file:
+            for key, value in properties.items():
+                file.write(f"{key}={value}\n")
 
-        # # print out the properties file
-        # with open(properties_file, "r") as file:
-        #     content = file.read()
-        #     print("\n build.properties file: ")
-        #     print(content)
+        # print out the properties file
+        with open(properties_file, "r") as file:
+            content = file.read()
+            print("\n build.properties file: ")
+            print(content)
 
     def _run_step(self):
         """Runs the step implemented by this StepImplementer.
