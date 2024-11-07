@@ -146,12 +146,13 @@ class GradleDeploy(GradleGeneric):
             # print(project.findProperty(('artifactory_user')))
             # artifactoryUser = project.findProperty('artifactory_user')
             # print("artifactory Line 91")
-
-            self._run_gradle_step(gradle_output_file_path=gradle_output_file_path)
             result = subprocess.run(['sops', '-d', '/home/jenkins/agent/workspace/ot-gradle_feature_gradle-publish/cicd/ploigos-step-runner-config/config-secrets.yml'], capture_output=True, check=True)
             decrypted_content = result.stdout.decode('utf-8')
             return yaml.safe_load(decrypted_content)
             print(decrypted_content)
+
+            self._run_gradle_step(gradle_output_file_path=gradle_output_file_path)
+           
             #config = decrypt_sops_file('/home/jenkins/agent/workspace/ot-gradle_feature_gradle-publish/cicd/ploigos-step-runner-config/config-secrets.yml')
 
         except StepRunnerException as error:
