@@ -125,7 +125,7 @@ class GradleDeploy(GradleGeneric):
         """
 
         #self.read_and_replace_password()
-        time.sleep(5000)
+        #time.sleep(5000)
         #result = subprocess.run(['sops', '-d', '/home/jenkins/agent/workspace/ot-gradle_feature_gradle-publish/cicd/ploigos-step-runner-config/config-secrets.yml''], capture_output=True, check=True)
         #decrypted_content = result.stdout.decode('utf-8')
         #return yaml.safe_load(decrypted_content)
