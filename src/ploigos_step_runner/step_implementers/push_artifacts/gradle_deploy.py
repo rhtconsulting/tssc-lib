@@ -68,22 +68,6 @@ class GradleDeploy(GradleGeneric):
         """
         return REQUIRED_CONFIG_OR_PREVIOUS_STEP_RESULT_ARTIFACT_KEYS
 
-    def decrypt_sops_file(file_path):
-        """Decrypt a SOPS-encrypted file."""
-        try:
-            # Use sops to decrypt the file
-            result = subprocess.run(['sops', '-d', file_path], capture_output=True, check=True)
-            decrypted_content = result.stdout.decode('utf-8')
-            return yaml.safe_load(decrypted_content)  # Load as a Python dictionary
-        except subprocess.CalledProcessError as e:
-            print(f"Error decrypting file: {e}")
-            return None
-
-    def set_env_variables(config):
-        """Set environment variables from the config dictionary."""
-        for key, value in config.items():
-            os.environ[key] = str(value)
-            print(f"{key}: {value}")
 
     def read_and_replace_password(self):
         """Read a properties file, replace the Artifactory password, and save the changes."""
@@ -146,10 +130,6 @@ class GradleDeploy(GradleGeneric):
             # print(project.findProperty(('artifactory_user')))
             # artifactoryUser = project.findProperty('artifactory_user')
             # print("artifactory Line 91")
-            result = subprocess.run(['sops', '-d', '/home/jenkins/agent/workspace/ot-gradle_feature_gradle-publish/cicd/ploigos-step-runner-config/config-secrets.yml'], capture_output=True, check=True)
-            decrypted_content = result.stdout.decode('utf-8')
-            return yaml.safe_load(decrypted_content)
-            print(decrypted_content)
 
             self._run_gradle_step(gradle_output_file_path=gradle_output_file_path)
            
