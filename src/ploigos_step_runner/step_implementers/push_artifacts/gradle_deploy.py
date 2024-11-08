@@ -71,19 +71,19 @@ class GradleDeploy(GradleGeneric):
         """Read a properties file, replace the Artifactory password, and save the changes."""
         properties = {}
 
-        # current_path = Path.cwd()
-        # print("current_path")
-        # print(current_path)
-        # files_via_Path = os.listdir(current_path)
-        # for file in files_via_Path:
-        #     print("\n files_via_Path ::" + file)
+        current_path = Path.cwd()
+        print("current_path")
+        print(current_path)
+        files_via_Path = os.listdir(current_path)
+        for file in files_via_Path:
+            print("\n files_via_Path ::" + file)
 
-        # current_working_directory = os.getcwd()
-        # print("current_working_directory")
-        # print(current_working_directory)
-        # files_via_current_cwd = os.listdir(current_working_directory)
-        # for file in files_via_current_cwd:
-        #     print("\n files_via_current_cwd ::" + file)
+        current_working_directory = os.getcwd()
+        print("current_working_directory")
+        print(current_working_directory)
+        files_via_current_cwd = os.listdir(current_working_directory)
+        for file in files_via_current_cwd:
+            print("\n files_via_current_cwd ::" + file)
 
         properties_file = os.path.join(os.getcwd(), "gradle.properties")
         artifactory_password = self.get_value("gradle-token-alpha")
