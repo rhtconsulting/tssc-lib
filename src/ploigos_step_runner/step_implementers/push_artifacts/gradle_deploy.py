@@ -85,7 +85,9 @@ class GradleDeploy(GradleGeneric):
         # for file in files_via_current_cwd:
         #     print("\n files_via_current_cwd ::" + file)
 
-        properties_file = os.path.join(os.getcwd(), "gradle.properties")
+        #properties_file = os.path.join(os.getcwd(), "gradle.properties")
+        properties_file = os.path.join(os.getcwd(), "app/build.gradle")
+
         artifactory_password = self.get_value("gradle-token-alpha")
 
         # # Read the properties file
@@ -98,8 +100,12 @@ class GradleDeploy(GradleGeneric):
                     properties[key] = value
 
         # Replace the Artifactory password value
-        if "artifactory_password" in properties:
-            properties["artifactory_password"] = artifactory_password
+        # if "artifactory_password" in properties:
+        #     properties["artifactory_password"] = artifactory_password
+
+        # Replace the Artifactory password value
+        if "password" in properties:
+            properties["password"] = artifactory_password
 
         # Write the modified properties back to the file
         with open(properties_file, "w") as file:
@@ -109,7 +115,7 @@ class GradleDeploy(GradleGeneric):
         # print out the properties file
         with open(properties_file, "r") as file:
             content = file.read()
-            print("\n build.properties file: ")
+            print("\n build.gradle file: ")
             print(content)
 
     def _run_step(self):
