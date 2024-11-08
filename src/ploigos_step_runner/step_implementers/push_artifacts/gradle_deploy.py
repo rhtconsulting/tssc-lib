@@ -71,10 +71,10 @@ class GradleDeploy(GradleGeneric):
         """Read a properties file, replace the Artifactory password, and save the changes."""
         properties = {}
 
-        current_path = Path.cwd()
+        current_path = Path.cwd() + "/app"
         print("current_path")
-        print(current_path/app)
-        files_via_Path = os.listdir(current_path/app)
+        print(current_path)
+        files_via_Path = os.listdir(current_path)
         for file in files_via_Path:
             print("\n files_via_Path ::" + file)
 
