@@ -124,25 +124,14 @@ class GradleDeploy(GradleGeneric):
         self.read_and_replace_password()
         step_result = StepResult.from_step_implementer(self)
 
-        # Get config items
-        # maven_push_artifact_repo_id = self.get_value('maven-push-artifact-repo-id')
-        # maven_push_artifact_repo_url = self.get_value('maven-push-artifact-repo-url')
-        # version = self.get_value('version')
-
         # push the artifacts
         gradle_output_file_path = self.write_working_file("gradle_deploy_output.txt")
 
         try:
             # execute Gradle Artifactory publish step (params come from config)
             print("Push packaged gradle artifacts")
-            # print("artifactory: " + self.get_value('artifactory-user'))
-            # print(project.findProperty(('artifactory_user')))
-            # artifactoryUser = project.findProperty('artifactory_user')
-            # print("artifactory Line 91")
 
             self._run_gradle_step(gradle_output_file_path=gradle_output_file_path)
-
-            # config = decrypt_sops_file('/home/jenkins/agent/workspace/ot-gradle_feature_gradle-publish/cicd/ploigos-step-runner-config/config-secrets.yml')
 
         except StepRunnerException as error:
             step_result.success = False
