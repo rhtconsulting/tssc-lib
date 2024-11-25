@@ -1241,7 +1241,7 @@ Result	fail
     )
     @patch.object(OpenSCAPGeneric, '_OpenSCAPGeneric__get_oscap_document_type')
     @patch('sh.buildah', create=True)
-    def test_pass_with_tailoring_file(
+    def test_pass_with_tailoring_file_download(
         self,
         buildah_mock,
         get_oscap_document_type_mock,
@@ -1330,6 +1330,147 @@ Result	fail
                     re.DOTALL
                 )
             )
+
+    @patch.object(OpenSCAPGeneric, '_OpenSCAPGeneric__run_oscap_scan')
+    @patch('ploigos_step_runner.step_implementers.shared.openscap_generic.mount_container')
+    @patch(
+        'ploigos_step_runner.step_implementers.shared.openscap_generic.create_container_from_image',
+        return_value='mock-image-working-container-mock-1'
+    )
+    @patch('ploigos_step_runner.step_implementers.shared.openscap_generic.clone_repo')
+    @patch.object(OpenSCAPGeneric, '_OpenSCAPGeneric__get_oscap_document_type')
+    def test_pass_with_tailoring_file_clone(
+        self,
+        get_oscap_document_type_mock,
+        clone_repo_mock,
+        create_container_from_image_mock,
+        mount_container_mock,
+        run_oscap_scan_mock
+    ):
+        # Set up mock values, to be repeatedly referenced throughout test
+        step_name = 'test'
+        implementer = 'OpenSCAP'
+        tailoring_repo_subdir = OpenSCAPGeneric._get_tailoring_repo_subdir()
+
+        oscap_document_type = 'Source Data Stream'
+        oscap_eval_type = 'xccdf'
+        oscap_profile = 'foo'
+        oscap_input_definitions_file_uncompressed = 'rhel-8.ds.xml'
+        oscap_input_definitions_uri = f"https://www.redhat.com/security/data/metrics/ds/v2/RHEL8/{oscap_input_definitions_file_uncompressed}.bz2"
+        container_image_tag = 'localhost/mock-org/mock-image:v0.42.0-mock'
+
+        oscap_tailoring_repo_uri = 'https://github.com/ploigos/ploigos-example-oscap-content.git'
+        oscap_tailoring_repo_file = 'xccdf_com.redhat.ploigos_profile_example_ubi8-tailoring-xccdf.xml'
+        git_username = 'username'
+        git_password = 'super-secret'
+        default_repository_type = 'containers-storage:'
+
+        oscap_eval_success = True
+        oscap_eval_fails = None
+        oscap_failure_met_threshold = False
+        mount_path = '/does/not/matter/container-mount'
+        get_oscap_document_type_mock.return_value = oscap_document_type
+
+        # Set up mock behaviors / return values
+        mount_container_mock.return_value = mount_path
+        run_oscap_scan_mock.return_value = [
+            oscap_eval_success,
+            oscap_eval_fails,
+            oscap_failure_met_threshold
+        ]
+
+        # Define the step config
+        step_config = {
+            'oscap-input-definitions-uri': oscap_input_definitions_uri,
+            'oscap-tailoring-repo-uri': oscap_tailoring_repo_uri,
+            'oscap-tailoring-repo-file': oscap_tailoring_repo_file,
+            'git-username': git_username,
+            'git-password': git_password,
+            'oscap-profile': oscap_profile,
+            'container-image-tag': container_image_tag
+        }
+
+        with TempDirectory() as temp_dir:
+            # Set up additional mock values (that require the use of temp_dir)
+            parent_work_dir_path = os.path.join(temp_dir.path, 'working')
+            expected_definitions_file = f"{parent_work_dir_path}" \
+                                        f"/{step_name}" \
+                                        f"/{oscap_input_definitions_file_uncompressed}"
+            oscap_tailoring_repo_local_dir = f"{parent_work_dir_path}" \
+                                             f"/{step_name}" \
+                                             f"/{tailoring_repo_subdir}"
+            expected_tailoring_file = f"{oscap_tailoring_repo_local_dir}" \
+                                      f"/{oscap_tailoring_repo_file}"
+
+            # Construct the step implementer, to execute our test
+            step_implementer = self.create_step_implementer(
+                step_config=step_config,
+                step_name=step_name,
+                implementer=implementer,
+                parent_work_dir_path=parent_work_dir_path
+            )
+
+            # Execute the test (with redirected stdout for verification later)
+            stdout_buff = StringIO()
+            with redirect_stdout(stdout_buff):
+                step_result = step_implementer._run_step()
+
+            # Verification of test execution
+            expected_results = StepResult(
+                step_name=step_name,
+                sub_step_name=implementer,
+                sub_step_implementer_name=implementer
+            )
+            expected_results.success = True
+            expected_results.add_artifact(
+                name='html-report',
+                value=f"{step_implementer.work_dir_path}/oscap-xccdf-report.html"
+            )
+            expected_results.add_artifact(
+                name='xml-report',
+                value=f"{step_implementer.work_dir_path}/oscap-xccdf-results.xml"
+            )
+            expected_results.add_artifact(
+                name='stdout-report',
+                value=f"{step_implementer.work_dir_path}/oscap-xccdf-out"
+            )
+            self.assertEqual(expected_results, step_result)
+
+            stdout = stdout_buff.getvalue()
+
+            expected_container_name = 'mock-image-working-container-mock-1'
+            self.assertRegex(
+                stdout,
+                re.compile(
+                    rf".*Create container from image \({container_image_tag}\)"
+                    rf".*Created container \({expected_container_name}\) from image \({container_image_tag}\)"
+                    rf".*Mount container: {expected_container_name}"
+                    rf".*Mounted container \({expected_container_name}\) with mount path: '{mount_path}'"
+                    rf".*Download input definitions: {oscap_input_definitions_uri}"
+                    rf".*Downloaded input definitions to: /.+/working/test/rhel\-8.ds.xml"
+                    rf".*Cloning repo with oscap tailoring file: {oscap_tailoring_repo_uri}"
+                    rf".*Cloned oscap repo; tailoring file located at: {expected_tailoring_file}"
+                    rf".*Determine OpenSCAP document type of input file: {expected_definitions_file}"
+                    rf".*Determined OpenSCAP document type of input file \({expected_definitions_file}\): {oscap_document_type}"
+                    rf".*Determine OpenSCAP eval type for input file \({expected_definitions_file}\) of document type: {oscap_document_type}"
+                    rf".*Determined OpenSCAP eval type of input file \({expected_definitions_file}\): {oscap_eval_type}"
+                    rf".*Run oscap scan"
+                    rf".*OpenSCAP scan completed with eval success: True",
+                    re.DOTALL
+                )
+            )
+
+            clone_repo_mock.assert_called_once_with(
+                oscap_tailoring_repo_local_dir,
+                oscap_tailoring_repo_uri,
+                git_username,
+                git_password
+            )
+            create_container_from_image_mock.assert_called_once_with(
+                image_address=container_image_tag,
+                repository_type=default_repository_type
+            )
+
 
     @patch('ploigos_step_runner.step_implementers.shared.openscap_generic.download_and_decompress_source_to_destination')
     @patch.object(OpenSCAPGeneric, '_OpenSCAPGeneric__run_oscap_scan')
@@ -1505,4 +1646,71 @@ Result	fail
                     rf".*Download oscap tailoring file: {oscap_tailoring_uri}",
                     re.DOTALL
                 )
+            )
+
+class TestStepImplementerSharedOpenSCAPGeneric__get_tailoring_file_from_git_repo(
+    BaseTestStepImplementerSharedOpenSCAPGeneric
+):
+    @patch('ploigos_step_runner.step_implementers.shared.openscap_generic.clone_repo')
+    def test__get_tailoring_file_from_git_repo_success(
+            self,
+            clone_repo_mock
+    ):
+        # Set up mock values, to be repeatedly referenced throughout test
+        step_name = 'test'
+        implementer = 'OpenSCAP'
+        tailoring_repo_subdir = OpenSCAPGeneric._get_tailoring_repo_subdir()
+
+        oscap_input_definition_uri = 'https://www.redhat.com/security/data/oval/v2/RHEL8/rhel-8.oval.xml.bz2'
+        image_tar_file = 'does-not-matter'
+        oscap_tailoring_repo_uri = 'http://git.example.org/myrepo.git'
+        oscap_tailoring_repo_file = 'my-tailoring-file.xml'
+        git_username = 'username'
+        git_password = 'super-secret'
+
+        # Define the step config
+        step_config = {
+            'oscap-input-definitions-uri': oscap_input_definition_uri,
+            'image-tar-file': image_tar_file,
+            'oscap-tailoring-repo-uri': oscap_tailoring_repo_uri,
+            'oscap-tailoring-repo-file': oscap_tailoring_repo_file,
+            'git-username': git_username,
+            'git-password': git_password
+        }
+
+        # Test execution requires a temp dir; continue test definition and execution under here
+        with TempDirectory() as temp_dir:
+            # Set up additional mock values (that require the use of temp_dir)
+            parent_work_dir_path = os.path.join(temp_dir.path, 'working')
+            oscap_tailoring_repo_local_dir = f"{parent_work_dir_path}" \
+                                             f"/{step_name}" \
+                                             f"/{tailoring_repo_subdir}"
+            expected_tailoring_file = f'{oscap_tailoring_repo_local_dir}' \
+                                      f'/{oscap_tailoring_repo_file}'
+
+            # Construct the step implementer, to execute our test
+            step_implementer = self.create_step_implementer(
+                step_config=step_config,
+                step_name=step_name,
+                implementer=implementer,
+                parent_work_dir_path=parent_work_dir_path
+            )
+
+            # Execute the test
+            actual_tailoring_file = step_implementer._get_tailoring_file_from_git_repo()
+
+            # Verification of test execution
+            self.assertEqual(
+                actual_tailoring_file,
+                expected_tailoring_file,
+                f"The tailoring values do not match; "
+                f"expected: {expected_tailoring_file} "
+                f"actual: {actual_tailoring_file}"
+            )
+
+            clone_repo_mock.assert_called_once_with(
+                oscap_tailoring_repo_local_dir,
+                oscap_tailoring_repo_uri,
+                git_username,
+                git_password
             )

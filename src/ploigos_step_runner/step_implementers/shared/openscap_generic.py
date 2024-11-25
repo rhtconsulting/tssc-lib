@@ -19,6 +19,14 @@ from runtime configuration.
                                                        to do the evaluation with. \
                                                        Must use protocol file://|http://|https://. \
                                                        Must have file extension .xml|.bz2.
+`oscap-tailoring-repo-uri`     | No        |         | URI to git repo containing OpenSCAP \
+                                                       tailoring file.
+`oscap-tailoring-repo-file`    | No        |         | Path + filename of tailoring file from the \
+                                                       `oscap-tailoring-repo-uri` git repository.
+`git-username`                 | No        |         | If cloning `oscap-tailoring-repo-uri`, git \
+                                                       username must be provided.
+`git-password`                 | No        |         | If cloning `oscap-tailoring-repo-uri`, git \
+                                                       password must be provided.
 `oscap-fetch-remote-resources` | No        | True    | For Source DataStream and XCCDF files \
                                                        that have remote references fetch them if \
                                                        True, else don't. \
@@ -66,6 +74,7 @@ from ploigos_step_runner.utils.containers import (create_container_from_image,
                                                   mount_container)
 from ploigos_step_runner.utils.file import \
     download_and_decompress_source_to_destination
+from ploigos_step_runner.utils.git import clone_repo
 from ploigos_step_runner.utils.io import \
     create_sh_redirect_to_multiple_streams_fn_callback
 
@@ -317,14 +326,23 @@ class OpenSCAPGeneric(StepImplementer):
             try:
                 # if specified download oscap tailoring file
                 oscap_tailoring_file = None
+
                 oscap_tailoring_file_uri = self.get_value('oscap-tailoring-uri')
+                oscap_tailoring_repo_uri = self.get_value('oscap-tailoring-repo-uri')
+
                 if oscap_tailoring_file_uri:
+                    # Tailoring file can be directly downloaded
                     print(f"\nDownload oscap tailoring file: {oscap_tailoring_file_uri}")
                     oscap_tailoring_file = download_and_decompress_source_to_destination(
                         source_uri=oscap_tailoring_file_uri,
                         destination_dir=self.work_dir_path
                     )
                     print(f"Download oscap tailoring file to: {oscap_tailoring_file}")
+                elif oscap_tailoring_repo_uri:
+                    # Tailoring file comes from a remote git repo
+                    print(f"\nCloning repo with oscap tailoring file: {oscap_tailoring_repo_uri}")
+                    oscap_tailoring_file = self._get_tailoring_file_from_git_repo()
+                    print(f"Cloned oscap repo; tailoring file located at: {oscap_tailoring_file}")
             except (RuntimeError, ValueError) as error:
                 raise StepRunnerException(
                     f"Error downloading OpenSCAP tailoring file: {error}"
@@ -403,6 +421,30 @@ class OpenSCAPGeneric(StepImplementer):
             step_result.message = str(error)
 
         return step_result
+
+    def _get_tailoring_file_from_git_repo(self):
+        # Create the directory to clone into
+        oscap_tailoring_repo_local_dir = self.create_working_dir_sub_dir(
+            OpenSCAPGeneric._get_tailoring_repo_subdir()
+        )
+
+        # Gather the uri & credentials for the git repository
+        oscap_tailoring_repo_uri = self.get_value('oscap-tailoring-repo-uri')
+        git_username = self.get_value('git-username')
+        git_password = self.get_value('git-password')
+
+        # Clone the tailoring definition repository
+        clone_repo(
+            oscap_tailoring_repo_local_dir,
+            oscap_tailoring_repo_uri,
+            git_username,
+            git_password
+        )
+
+        # Get full path of the tailoring file, relative to the root of the repository
+        oscap_tailoring_repo_file = self.get_value('oscap-tailoring-repo-file')
+
+        return oscap_tailoring_repo_local_dir + '/' + oscap_tailoring_repo_file
 
     @staticmethod
     def __get_oscap_document_type(oscap_input_file):
@@ -677,3 +719,7 @@ class OpenSCAPGeneric(StepImplementer):
         oscap_severity_index = severity_dict.get(oscap_severity.strip().lower())
 
         return oscap_severity_index
+
+    @staticmethod
+    def _get_tailoring_repo_subdir():
+        return 'oscap-tailoring-repo'
