@@ -47,12 +47,13 @@ jobs:
       run: tox -e test
 
     - name: Upload Coverage Report 🔺📊
-      uses: codecov/codecov-action@v3.1.1
+      uses: codecov/codecov-action@v4.5.0
       with:
         flags: pytests
         name: Python ${{ matrix.python-version }}
         env_vars: PYTHON
         fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }}
 
 #  integration-test:
 #    runs-on: ubuntu-latest
