@@ -182,11 +182,11 @@ class TestSOPSConfigValueDecryptor(BaseTestCase):
 
         sops_decryptor = SOPS()
 
-        # with self.assertRaisesRegex(
-        #     ValueError,
-        #     r"Given config value \(ConfigValue\(.*\)\) parent source \(None\) " \
-        #     r"is expected to be of type dict or str but is of type: <class 'NoneType'>"
-        # ):
+        with self.assertRaisesRegex(
+            ValueError,
+            r"Given config value \(ConfigValue\(.*\)\) parent source \(None\) " \
+            r"is expected to be of type dict or str but is of type: <class 'NoneType'>"
+        ):
             sops_decryptor.decrypt(config_value)
 
     def test_decrypt_sops_error(self, sops_mock):
