@@ -117,7 +117,7 @@ class GradleTest(GradleGeneric):
 
                     # check for valid file
                     if not test_results:
-                        step_resluts.message += (f'\nWARNING: Did not find any test results for file {fullname}')
+                        step_results.message += (f'\nWARNING: Did not find any test results for file {fullname}')
 
                     # check for required attributes
                     missing_attributes = self._get_missing_required_test_attributes(test_results, self.TEST_RESULTS_ATTRIBUTES_REQUIRED)
@@ -182,6 +182,6 @@ class GradleTest(GradleGeneric):
                         num = int(string)
                         total[k] = int(total[k]) + num
         except Exception as e:
-            print(f"WARNING: Error converting string to number in file {file} \n {e}")       
+            print(f"WARNING: Error converting string to number in file \n {e}")       
         return total
 
