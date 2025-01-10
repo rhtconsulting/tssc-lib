@@ -75,20 +75,20 @@ class TestDownloadAndDecompressSourceToDestination(BaseTestCase):
     def test_https_xml(self):
         with TempDirectory() as test_dir:
             destination_path = download_and_decompress_source_to_destination(
-                source_uri="https://raw.githubusercontent.com/ploigos/ploigos-step-runner/1cda48c9c659f2eb862b9427f804ae25990a2379/tests/utils/files/cvrf-rhba-2020-0017.xml",
-                destination_dir=test_dir.path,
+                source_uri="https://www.w3schools.com/xml/simple.xml",
+                destination_dir=test_dir.path
             )
 
             self.assertIsNotNone(destination_path)
-            self.assertRegex(
-                destination_path, rf"{test_dir.path}/cvrf-rhba-2020-0017.xml$"
-            )
+            self.assertRegex(destination_path, rf'{test_dir.path}/simple.xml$')
             with open(destination_path) as downloaded_file:
                 self.assertTrue(downloaded_file.read())
 
     def test_local_file_download_file_prefix(self):
         sample_file_path = os.path.join(
-            os.path.dirname(__file__), "files", "cvrf-rhba-2020-0017.xml"
+            os.path.dirname(__file__),
+            'files',
+            'simple.xml'
         )
 
         with TempDirectory() as test_dir:
@@ -97,19 +97,14 @@ class TestDownloadAndDecompressSourceToDestination(BaseTestCase):
             )
 
             self.assertIsNotNone(destination_path)
-            self.assertRegex(
-                destination_path, rf"{test_dir.path}/cvrf-rhba-2020-0017.xml$"
-            )
-            with open(destination_path) as downloaded_file, open(
-                sample_file_path
-            ) as sample_file:
+            self.assertRegex(destination_path, rf'{test_dir.path}/simple.xml$')
+            with open(destination_path) as downloaded_file, open(sample_file_path) as sample_file:
                 downloaded_file_contents = downloaded_file.read()
                 self.assertTrue(downloaded_file_contents)
                 self.assertEqual(downloaded_file_contents, sample_file.read())
 
     def test_local_file_download_forward_slash_prefix(self):
         sample_file_path = os.path.join(
-            os.path.dirname(__file__), "files", "cvrf-rhba-2020-0017.xml"
         )
 
         with TempDirectory() as test_dir:
@@ -118,12 +113,8 @@ class TestDownloadAndDecompressSourceToDestination(BaseTestCase):
             )
 
             self.assertIsNotNone(destination_path)
-            self.assertRegex(
-                destination_path, rf"{test_dir.path}/cvrf-rhba-2020-0017.xml$"
-            )
-            with open(destination_path) as downloaded_file, open(
-                sample_file_path
-            ) as sample_file:
+            self.assertRegex(destination_path, rf'{test_dir.path}/simple.xml$')
+            with open(destination_path) as downloaded_file, open(sample_file_path) as sample_file:
                 downloaded_file_contents = downloaded_file.read()
                 self.assertTrue(downloaded_file_contents)
                 self.assertEqual(downloaded_file_contents, sample_file.read())
@@ -156,20 +147,20 @@ class TestDownloadSourceToDestination(BaseTestCase):
     def test_https_xml(self):
         with TempDirectory() as test_dir:
             destination_path = download_source_to_destination(
-                source_uri="https://raw.githubusercontent.com/ploigos/ploigos-step-runner/1cda48c9c659f2eb862b9427f804ae25990a2379/tests/utils/files/cvrf-rhba-2020-0017.xml",
-                destination_dir=test_dir.path,
+                source_uri="https://www.w3schools.com/xml/simple.xml",
+                destination_dir=test_dir.path
             )
 
             self.assertIsNotNone(destination_path)
-            self.assertRegex(
-                destination_path, rf"{test_dir.path}/cvrf-rhba-2020-0017.xml$"
-            )
+            self.assertRegex(destination_path, rf'{test_dir.path}/simple.xml$')
             with open(destination_path) as downloaded_file:
                 self.assertTrue(downloaded_file.read())
 
     def test_local_file_download_file_prefix(self):
         sample_file_path = os.path.join(
-            os.path.dirname(__file__), "files", "cvrf-rhba-2020-0017.xml"
+            os.path.dirname(__file__),
+            'files',
+            'simple.xml'
         )
 
         with TempDirectory() as test_dir:
@@ -178,19 +169,17 @@ class TestDownloadSourceToDestination(BaseTestCase):
             )
 
             self.assertIsNotNone(destination_path)
-            self.assertRegex(
-                destination_path, rf"{test_dir.path}/cvrf-rhba-2020-0017.xml$"
-            )
-            with open(destination_path) as downloaded_file, open(
-                sample_file_path
-            ) as sample_file:
+            self.assertRegex(destination_path, rf'{test_dir.path}/simple.xml$')
+            with open(destination_path) as downloaded_file, open(sample_file_path) as sample_file:
                 downloaded_file_contents = downloaded_file.read()
                 self.assertTrue(downloaded_file_contents)
                 self.assertEqual(downloaded_file_contents, sample_file.read())
 
     def test_local_file_download_forward_slash_prefix(self):
         sample_file_path = os.path.join(
-            os.path.dirname(__file__), "files", "cvrf-rhba-2020-0017.xml"
+            os.path.dirname(__file__),
+            'files',
+            'simple.xml'
         )
 
         with TempDirectory() as test_dir:
@@ -199,12 +188,8 @@ class TestDownloadSourceToDestination(BaseTestCase):
             )
 
             self.assertIsNotNone(destination_path)
-            self.assertRegex(
-                destination_path, rf"{test_dir.path}/cvrf-rhba-2020-0017.xml$"
-            )
-            with open(destination_path) as downloaded_file, open(
-                sample_file_path
-            ) as sample_file:
+            self.assertRegex(destination_path, rf'{test_dir.path}/simple.xml$')
+            with open(destination_path) as downloaded_file, open(sample_file_path) as sample_file:
                 downloaded_file_contents = downloaded_file.read()
                 self.assertTrue(downloaded_file_contents)
                 self.assertEqual(downloaded_file_contents, sample_file.read())

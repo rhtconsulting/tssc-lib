@@ -369,6 +369,15 @@ From least precedence to highest precedence.
           # Required.
           # Id to the artifact repository to push the artifact to.
           maven-push-artifact-repo-id: ''
+      - implementer: GradelDeploy
+        config: {
+          # Required.
+          # URL to the artifact repository to push the artifact to.
+          # maven-push-artifact-repo-url: ''
+
+          # Required.
+          # Id to the artifact repository to push the artifact to.
+          # maven-push-artifact-repo-id: ''
 
         }
 
@@ -733,7 +742,10 @@ From least precedence to highest precedence.
           # npm-envs:
           #   ENV_VAR1: VALUE1
           #   ENV_VAR2: VALUE2
-
+          
+      - implementer: GradleTest
+        config: {}
+  
       push-artifacts:
       # WARNING: not yet implemented
       - implementer: NPM
