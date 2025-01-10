@@ -117,7 +117,7 @@ class GradleTest(GradleGeneric):
 
                     # check for valid file
                     if not test_results:
-                        step_results.message += (f'\nWARNING: Did not find any test results for file {fullname}')
+                        StepResult.message += (f'\nWARNING: Did not find any test results for file {fullname}')
 
                     # check for required attributes
                     missing_attributes = self._get_missing_required_test_attributes(test_results, self.TEST_RESULTS_ATTRIBUTES_REQUIRED)
