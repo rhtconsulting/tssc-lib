@@ -75,6 +75,7 @@ step-runner-config:
 
   unit-test:
     - implementer: NpmTest
+    - implementer: GradleTest
 
   package:
   - implementer: NpmPackage
