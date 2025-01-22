@@ -1,3 +1,4 @@
+
 """PSR step for running Unit Tests with Gradle"""
 import os
 import xml.etree.ElementTree as ET
@@ -177,12 +178,15 @@ class GradleTest(GradleGeneric):
             for k in total.keys():
                 if k in current:
                     string = current[k]
+
                     if '.' in string:
+
                         num = float(string)
                         total[k] = float(total[k]) + num
                     else:
                         num = int(string)
                         total[k] = int(total[k]) + num
         except Exception as e:
+
             print(f"WARNING: Error converting string to number in file \n {e}")
         return total

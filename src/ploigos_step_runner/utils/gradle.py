@@ -10,6 +10,7 @@ from ploigos_step_runner.exceptions import StepRunnerException
 from ploigos_step_runner.utils.io import \
     create_sh_redirect_to_multiple_streams_fn_callback
 
+
 class GradleGroovyParserException(Exception):
     """An exception dedicated to gradle's groovy DSL parsing.
 
@@ -32,6 +33,7 @@ class GradleGroovyParserException(Exception):
     def __str__(self):
         return "%s file: %s" % (self.file_name, self.message)
 
+
 class GradleGroovyParser:
     """A gradle groovy build file parser. 
 
@@ -52,6 +54,7 @@ class GradleGroovyParser:
     Bool
         True if step completed successfully
         False if step returned an error message
+
     """
     file_name = ""
     raw_file = None
@@ -60,6 +63,7 @@ class GradleGroovyParser:
         self.file_name = file_name
         with open(file_name, encoding='utf-8') as f:
             self.raw_file = f.read()
+
 
     def get_version(self):
         """Gets the project version from a gradle groovy build file.
@@ -79,15 +83,18 @@ class GradleGroovyParser:
         if len(tokens) == 1:
             version = tokens[0].strip()
         elif len(tokens) > 1:
+
             raise GradleGroovyParserException(self.file_name, "More than one version found. " + str(tokens) )
-        return version
+
 
 def run_gradle( #pylint: disable=too-many-arguments, too-many-locals
     gradle_output_file_path,
     build_file,
     tasks,
     additional_arguments=None,
+
     console_plain=True
+
 ):
     """Runs gradle using the given configuration.
 
@@ -117,16 +124,20 @@ def run_gradle( #pylint: disable=too-many-arguments, too-many-locals
         If gradle returns a none 0 exit code.
     """
 
+
     if not isinstance(tasks, list):
         tasks = [tasks]
+
 
     # create console plain argument
     console_plain_argument = None
     if console_plain:
         console_plain_argument = '--console=plain'
 
+
     if not additional_arguments:
         additional_arguments = []
+
 
     # run gradle
     gradle_output_buff = StringIO()

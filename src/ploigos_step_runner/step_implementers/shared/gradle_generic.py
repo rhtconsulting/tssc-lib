@@ -10,7 +10,9 @@ Could come from:
 
 Configuration Key            | Required? | Default | Description
 -----------------------------|-----------|---------|-----------
+
 `build-file`                 | Yes       | `'build.gradle'` | builfile used when executing gradle.
+
 `tasks`                      | Yes       |         | List of gradle tasks to execute.
 `gradle-console-plain`       | No        | `True`  | `True` use old append style log output. \
                                                      `False` use new fancy screen redraw log output.

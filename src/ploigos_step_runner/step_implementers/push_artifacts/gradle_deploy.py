@@ -1,6 +1,6 @@
+
 """PSR Step for pushing artifact with Gradle to artifactory"""
 import os
-# from pathlib import Path
 from ploigos_step_runner.exceptions import StepRunnerException
 from ploigos_step_runner.results.step_result import StepResult
 from ploigos_step_runner.step_implementers.shared.gradle_generic import GradleGeneric
@@ -75,6 +75,7 @@ class GradleDeploy(GradleGeneric):
         for file in files_via_path:
             print("\n files_via_path ::" + file)
 
+
         current_working_directory = os.getcwd()
         print("current_working_directory")
         print(current_working_directory)
@@ -86,6 +87,7 @@ class GradleDeploy(GradleGeneric):
         artifactory_password = self.get_value("gradle-token-alpha")
 
         # # Read the properties file
+
         with open(properties_file, "r", encoding="utf8") as file:
             for line in file:
                 # Skip comments and empty lines
@@ -98,12 +100,13 @@ class GradleDeploy(GradleGeneric):
         if "artifactory_password" in properties:
             properties["artifactory_password"] = artifactory_password
 
-        # Write the modified properties back to the file
+
         with open(properties_file, "w", encoding="utf8") as file:
             for key, value in properties.items():
                 file.write(f"{key}={value}\n")
 
         # print out the properties file
+
         with open(properties_file, "r", encoding="utf8") as file:
             content = file.read()
             print("\n build.properties file: ")

@@ -33,7 +33,9 @@ class TestStepImplementerGradleGenerateMetadata(BaseStepImplementerTestCase):
     def test_step_implementer_config_defaults(self):
         defaults = Gradle.step_implementer_config_defaults()
         expected_defaults = {
+
             'build-file': 'app/build.gradle',
+
             'gradle-additional-arguments': [],
             'gradle-console-plain': True
         }
