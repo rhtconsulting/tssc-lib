@@ -10,7 +10,9 @@ Could come from:
 
 Configuration Key            | Required? | Default | Description
 -----------------------------|-----------|---------|-----------
-`build-file`                 | Yes       | `'build.gradle'` | buildfile used when executing gradle.
+
+`build-file`                 | Yes       | `'build.gradle'` | builfile used when executing gradle.
+
 `tasks`                      | Yes       |         | List of gradle tasks to execute.
 `gradle-console-plain`       | No        | `True`  | `True` use old append style log output. \
                                                      `False` use new fancy screen redraw log output.
@@ -109,7 +111,7 @@ class GradleGeneric(StepImplementer):
         if build_file is not None:
             assert os.path.exists(build_file), \
                 f'Given gradle build file does not exist: {build_file}'
-                
+
     @property
     def gradle_tasks(self):
         """Property for getting the gradle tasks to execute which can either come
@@ -129,7 +131,7 @@ class GradleGeneric(StepImplementer):
             gradle_tasks = self.get_value('gradle-tasks')
 
         return gradle_tasks
-    
+
     def _run_gradle_step(
         self,
         gradle_output_file_path,

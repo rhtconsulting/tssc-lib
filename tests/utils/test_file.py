@@ -105,6 +105,11 @@ class TestDownloadAndDecompressSourceToDestination(BaseTestCase):
 
     def test_local_file_download_forward_slash_prefix(self):
         sample_file_path = os.path.join(
+
+            os.path.dirname(__file__),
+            'files',
+            'simple.xml'
+
         )
 
         with TempDirectory() as test_dir:

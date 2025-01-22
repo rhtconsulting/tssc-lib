@@ -27,7 +27,9 @@ Result Artifact Key                     | Description
 from ploigos_step_runner.results import StepResult
 from ploigos_step_runner.exceptions import StepRunnerException
 from ploigos_step_runner.step_implementers.shared import GradleGeneric
-from ploigos_step_runner.utils.gradle import run_gradle, GradleGroovyParser
+
+from ploigos_step_runner.utils.gradle import  GradleGroovyParser
+
 
 DEFAULT_CONFIG = {
     'build-file': 'app/build.gradle',
@@ -41,7 +43,7 @@ REQUIRED_CONFIG_OR_PREVIOUS_STEP_RESULT_ARTIFACT_KEYS = [
 class Gradle(GradleGeneric):
     """`StepImplementer` for the `generate-metadata` step using Gradle.
     """
-    
+
     @staticmethod
     def step_implementer_config_defaults():
         """Getter for the StepImplementer's configuration defaults.
@@ -88,7 +90,7 @@ class Gradle(GradleGeneric):
             If step configuration or previous step result artifacts have invalid required values
         """
         super()._validate_required_config_or_previous_step_result_artifact_keys()
-                
+
     def _run_step(self):
         """Runs the step implemented by this StepImplementer.
 
@@ -115,5 +117,6 @@ class Gradle(GradleGeneric):
         except StepRunnerException as error:
             step_result.success = False
             step_result.message = str(error)
+
 
         return step_result

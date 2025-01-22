@@ -1,9 +1,6 @@
+
+"""PSR Step for pushing artifact with Gradle to artifactory"""
 import os
-import xml.etree.ElementTree as ET
-import subprocess
-import yaml
-import time
-from pathlib import Path
 from ploigos_step_runner.exceptions import StepRunnerException
 from ploigos_step_runner.results.step_result import StepResult
 from ploigos_step_runner.step_implementers.shared.gradle_generic import GradleGeneric
@@ -74,9 +71,10 @@ class GradleDeploy(GradleGeneric):
         current_path = os.path.join(os.getcwd(), "app/build")
         print("current_path")
         print(current_path)
-        files_via_Path = os.listdir(current_path)
-        for file in files_via_Path:
-            print("\n files_via_Path ::" + file)
+        files_via_path = os.listdir(current_path)
+        for file in files_via_path:
+            print("\n files_via_path ::" + file)
+
 
         current_working_directory = os.getcwd()
         print("current_working_directory")
@@ -89,7 +87,8 @@ class GradleDeploy(GradleGeneric):
         artifactory_password = self.get_value("gradle-token-alpha")
 
         # # Read the properties file
-        with open(properties_file, "r") as file:
+
+        with open(properties_file, "r", encoding="utf8") as file:
             for line in file:
                 # Skip comments and empty lines
                 line = line.strip()
@@ -101,13 +100,14 @@ class GradleDeploy(GradleGeneric):
         if "artifactory_password" in properties:
             properties["artifactory_password"] = artifactory_password
 
-        # Write the modified properties back to the file
-        with open(properties_file, "w") as file:
+
+        with open(properties_file, "w", encoding="utf8") as file:
             for key, value in properties.items():
                 file.write(f"{key}={value}\n")
 
         # print out the properties file
-        with open(properties_file, "r") as file:
+
+        with open(properties_file, "r", encoding="utf8") as file:
             content = file.read()
             print("\n build.properties file: ")
             print(content)

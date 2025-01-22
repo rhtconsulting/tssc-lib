@@ -1,3 +1,5 @@
+
+"""PSR step for running Unit Tests with Gradle"""
 import os
 import xml.etree.ElementTree as ET
 
@@ -113,11 +115,12 @@ class GradleTest(GradleGeneric):
             for filename in os.listdir(test_report_dir):
                 if filename.endswith('.xml'):
                     fullname = os.path.join(test_report_dir, filename)
-                    test_results = self._get_test_results_from_file(fullname, self.TEST_RESULTS_ATTRIBUTES)
+                    test_results = \
+                        self._get_test_results_from_file(fullname, self.TEST_RESULTS_ATTRIBUTES)
 
                     # check for valid file
                     if not test_results:
-                        StepResult.message += (f'\nWARNING: Did not find any test results for file {fullname}')
+                        step_result.message += (f'\nWARNING: Did not find any test results for file {fullname}')
 
                     # check for required attributes
                     missing_attributes = self._get_missing_required_test_attributes(test_results, self.TEST_RESULTS_ATTRIBUTES_REQUIRED)
@@ -175,13 +178,15 @@ class GradleTest(GradleGeneric):
             for k in total.keys():
                 if k in current:
                     string = current[k]
-                    if '.' in string: 
+
+                    if '.' in string:
+
                         num = float(string)
                         total[k] = float(total[k]) + num
                     else:
                         num = int(string)
                         total[k] = int(total[k]) + num
         except Exception as e:
-            print(f"WARNING: Error converting string to number in file \n {e}")       
-        return total
 
+            print(f"WARNING: Error converting string to number in file \n {e}")
+        return total
